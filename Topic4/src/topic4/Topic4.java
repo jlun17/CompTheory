@@ -1,19 +1,18 @@
-package topic3;
+package topic4;
 
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Scanner;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
  * @author john
  */
-public class Topic3 {
+public class Topic4 {
 
    /**
     * For file input, the runtime complexity is O(n)
@@ -27,9 +26,8 @@ public class Topic3 {
       if(returnVal == JFileChooser.APPROVE_OPTION) {
          inFile = chooser.getSelectedFile();
       }
-
-      Scanner fileReader = null;
       
+      Scanner fileReader = null;
       try {
          fileReader = new Scanner(inFile);
       }
@@ -38,33 +36,49 @@ public class Topic3 {
          System.out.println("Program exiting");
          System.exit(1);
       }
-      FiniteAutomata dfa = new FiniteAutomata();
+      PushdownAutomata pda = new PushdownAutomata();
+      
+      // Set start state
       String startState = fileReader.next();
-      dfa.setStartState(startState);
+      pda.setStartState(startState);
+      
+      // Set accept states
       fileReader.nextLine();
       String acceptStates = fileReader.nextLine();
       for(String state : acceptStates.split(" ")) {
-         dfa.addAcceptState(state);
+         pda.addAcceptState(state);
       }
       
+      // Set transitions
       while(fileReader.hasNextLine()) {
          String tStr = fileReader.nextLine();
          String tArr[] = tStr.split(" ");
          Transition t = new Transition();
          t.setFromState(tArr[0]);
-         t.setLabel(tArr[1]);
-         t.setToState(tArr[2]);
-         dfa.addTransitions(t);
+         t.setLabel(tArr[1].substring(1));
+         t.setStackTop(tArr[2]);
+         t.setStackPush(tArr[3].substring(0, 1));
+         t.setToState(tArr[4]);
+         pda.addTransitions(t);
       }
-      dfa.setAlphabet();
-      dfa.setStates();
-      System.out.println(dfa.toString());
+      pda.setInputAlphabet();
+      pda.setStackAlphabet();
+      pda.setStates();
+      
+      JFrame f = new JFrame();
+      JOptionPane.showMessageDialog(f, pda.toString(), "PDA", JOptionPane.INFORMATION_MESSAGE);
+      
       String inputValue = JOptionPane.showInputDialog("Please input a string");
-      if(dfa.accept(inputValue)) {
-         System.out.println("The string \"" + inputValue + "\" is accepted");
-      }
-      else {
-         System.out.println("The string \"" + inputValue + "\" is not accepted");
-      }
+      do {
+         if(pda.accept("e" + inputValue + "e")) {
+            JOptionPane.showMessageDialog(f, "The string \"" + inputValue + "\" is accepted");
+         }
+         else {
+            JOptionPane.showMessageDialog(f, "The string \"" + inputValue + "\" is not accepted");
+         }
+         inputValue = JOptionPane.showInputDialog("Please input a string");
+      } while(inputValue != null);
+      System.exit(0);
    }
+   
 }
