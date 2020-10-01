@@ -134,9 +134,7 @@ public class TuringMachine {
          }
          currentState = temp[0];
          String writeSymbol = temp[1];
-         if(writeSymbol.compareTo(" ") != 0) {
-            tape.writeCell(writeSymbol.charAt(0));
-         }
+         tape.writeCell(writeSymbol.charAt(0));
          String direction = temp[2];
          if(direction.compareTo("R") == 0) {
             tape.moveRight();

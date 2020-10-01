@@ -17,6 +17,22 @@ public class Tape {
       }
       headPosition = 0;
    }
+   
+   public String config(String currentState) {
+      String str = "";
+      for(int i = 0; i < cells.size(); i++) {
+         if(i == headPosition) {
+            str += currentState;
+         }
+         if(cells.get(i) == ' ') {
+            str += "_";
+         }
+         else {
+            str += cells.get(i).toString();
+         }
+      }
+      return str;
+   }
 
    public ArrayList<Character> getCells() {
       return cells;
