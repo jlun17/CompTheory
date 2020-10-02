@@ -3,7 +3,6 @@ package topic4;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
-import javafx.util.Pair;
 
 /**
  *
@@ -60,7 +59,7 @@ public class PushdownAutomata {
    }
 
    public boolean addToInputAlphabet(String c) {
-      if(!inputAlphabet.contains(c)) {
+      if(!inputAlphabet.contains(c) && (c.compareTo("e") != 0)) {
          inputAlphabet.add(c);
          return true;
       }
@@ -126,19 +125,19 @@ public class PushdownAutomata {
       Deque<String> stack = new ArrayDeque<String>();
       int n = input.length();
       String currentState = startState;
-      Pair<String, Deque<String>> returnValue = null;
+      Pair returnValue = null;
       for(int i = 0; i < n; i++) {
          returnValue = delta(currentState, String.valueOf(input.charAt(i)), stack);
          if(returnValue == null) {
             return false;
          }
-         currentState = returnValue.getKey();
-         stack = returnValue.getValue();
+         currentState = returnValue.getToState();
+         stack = returnValue.getStack();
       }
       return acceptStates.contains(currentState);
    }
    
-   public Pair<String, Deque<String>> delta(String currentState, String input, Deque<String> stack) {
+   public Pair delta(String currentState, String input, Deque<String> stack) {
       for(Transition t : transitions) {
          boolean check1 = t.getFromState().compareTo(currentState) == 0;
          if(check1) {
